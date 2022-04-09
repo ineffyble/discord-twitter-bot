@@ -247,9 +247,14 @@ class Processor:
                 "[#%s](https://twitter.com/hashtag/%s)" % (hashtag["text"], hashtag["text"]),
             )
         self.text = unescape(self.text)
-        self.url = "https://twitter.com/{}/status/{}".format(
-            self.status_tweet["user"]["screen_name"], self.status_tweet["id_str"]
-        )
+        if "retweeted_status" in self.status_tweet:
+            self.url = "https://twitter.com/{}/status/{}".format(
+                self.status_tweet["retweeted_status"]["user"]["screen_name"], self.status_tweet["retweeted_status"]["id_str"]
+            )
+        else:
+            self.url = "https://twitter.com/{}/status/{}".format(
+                self.status_tweet["user"]["screen_name"], self.status_tweet["id_str"]
+            )
         self.user = self.status_tweet["user"]["name"]
 
     def keyword_set_present(self):
@@ -401,12 +406,14 @@ class Processor:
                 if self.discord_config.get("CreateEmbed", True):
                     webhook.send(
                         embed=self.embed,
+                        username=self.user,
                         content=self.discord_config.get("custom_message", "").format(
                             user=self.user, text=self.text, url=self.url
                         ),
                     )
                 else:
                     webhook.send(
+                        username=self.user,
                         content=self.discord_config.get("custom_message", "").format(
                             user=self.user, text=self.text, url=self.url
                         )
