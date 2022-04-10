@@ -248,14 +248,15 @@ class Processor:
             )
         self.text = unescape(self.text)
         if "retweeted_status" in self.status_tweet:
-            self.url = "https://twitter.com/{}/status/{}".format(
-                self.status_tweet["retweeted_status"]["user"]["screen_name"], self.status_tweet["retweeted_status"]["id_str"]
+            self.url = "{} Retweeted https://twitter.com/{}/status/{}".format(
+                self.status_tweet["user"]["screen_name"], self.status_tweet["retweeted_status"]["user"]["screen_name"], self.status_tweet["retweeted_status"]["id_str"]
             )
         else:
             self.url = "https://twitter.com/{}/status/{}".format(
                 self.status_tweet["user"]["screen_name"], self.status_tweet["id_str"]
             )
         self.user = self.status_tweet["user"]["name"]
+        self.username = self.status_tweet["user"]["screen_name"]
         self.avatar = self.status_tweet["user"]["profile_image_url"]
 
     def keyword_set_present(self):
@@ -407,7 +408,7 @@ class Processor:
                 if self.discord_config.get("CreateEmbed", True):
                     webhook.send(
                         embed=self.embed,
-                        username=self.user,
+                        username="{} ({})".format(self.user, self.username),
                         avatar_url=self.avatar,
                         content=self.discord_config.get("custom_message", "").format(
                             user=self.user, text=self.text, url=self.url
@@ -415,7 +416,7 @@ class Processor:
                     )
                 else:
                     webhook.send(
-                        username=self.user,
+                        username="{} ({})".format(self.user, self.username),
                         avatar_url=self.avatar,
                         content=self.discord_config.get("custom_message", "").format(
                             user=self.user, text=self.text, url=self.url
