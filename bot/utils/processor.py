@@ -249,7 +249,7 @@ class Processor:
         self.text = unescape(self.text)
         if "retweeted_status" in self.status_tweet:
             self.url = "{} Retweeted https://twitter.com/{}/status/{}".format(
-                self.status_tweet["user"]["screen_name"], self.status_tweet["retweeted_status"]["user"]["screen_name"], self.status_tweet["retweeted_status"]["id_str"]
+                self.status_tweet["user"]["name"], self.status_tweet["retweeted_status"]["user"]["screen_name"], self.status_tweet["retweeted_status"]["id_str"]
             )
         else:
             self.url = "https://twitter.com/{}/status/{}".format(
