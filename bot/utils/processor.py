@@ -256,6 +256,7 @@ class Processor:
                 self.status_tweet["user"]["screen_name"], self.status_tweet["id_str"]
             )
         self.user = self.status_tweet["user"]["name"]
+        self.avatar = self.status_tweet["user"]["profile_image_url"]
 
     def keyword_set_present(self):
         return keyword_set_present(self.discord_config.get("keyword_sets", [[""]]), self.text)
@@ -407,6 +408,7 @@ class Processor:
                     webhook.send(
                         embed=self.embed,
                         username=self.user,
+                        avatar_url=self.avatar,
                         content=self.discord_config.get("custom_message", "").format(
                             user=self.user, text=self.text, url=self.url
                         ),
@@ -414,6 +416,7 @@ class Processor:
                 else:
                     webhook.send(
                         username=self.user,
+                        avatar_url=self.avatar,
                         content=self.discord_config.get("custom_message", "").format(
                             user=self.user, text=self.text, url=self.url
                         )
